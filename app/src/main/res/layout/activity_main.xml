@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="tabi.sample.vpindicator.MainActivity">
+    
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="340dp">
+
+    </android.support.v4.view.ViewPager>
+    <tabi.vpindicator.ViewPagerIndicator
+        android:id="@+id/vpIndicator"
+        android:layout_width="match_parent"
+        app:vpi_drawable_unselected="@drawable/ic_white_select"
+        app:vpi_drawable="@drawable/ic_tick_select_light_green"
+        app:vpi_width="16dp"
+        app:vpi_height="16dp"
+        android:layout_height="48dp"/>
+</LinearLayout>
