@@ -38,3 +38,4 @@ Usage
 * `app:vpi_animator_reverse`
 * `app:vpi_orientation`
 * `app:vpi_gravity`
+* `app:vpi_indicator_per_row`
