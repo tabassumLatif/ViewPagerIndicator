@@ -29,6 +29,7 @@ public class ViewPagerIndicator extends LinearLayout {
     private final static int DEFAULT_INDICATOR_WIDTH = 5;
     private ViewPager mViewpager;
     private int mIndicatorMargin = -1;
+    private int indicatorPerRow = 8;
     private int mIndicatorWidth = -1;
     private int mIndicatorHeight = -1;
     private int mAnimatorResId = R.animator.scale_with_alpha;
@@ -78,6 +79,11 @@ public class ViewPagerIndicator extends LinearLayout {
         typedArray = context.obtainStyledAttributes(attrs, R.styleable.ViewPagerIndicator);
         mIndicatorWidth =
                 typedArray.getDimensionPixelSize(R.styleable.ViewPagerIndicator_vpi_width, -1);
+        indicatorPerRow =
+                typedArray.getInteger(R.styleable.ViewPagerIndicator_vpi_indicator_per_row, 8);
+        if(indicatorPerRow < 1){
+            indicatorPerRow = 1;
+        }
         mIndicatorHeight =
                 typedArray.getDimensionPixelSize(R.styleable.ViewPagerIndicator_vpi_height, -1);
         mIndicatorMargin =
@@ -322,7 +328,7 @@ public class ViewPagerIndicator extends LinearLayout {
             childLinear.addView(Indicator, layoutParams);
         }else {
             LinearLayout view = (LinearLayout) getChildAt(getChildCount() - 1);
-            if (view.getChildCount() == 10){
+            if (view.getChildCount() == indicatorPerRow){
                 LinearLayout childLinear = (LinearLayout) LayoutInflater.from(getContext()).inflate(
                         R.layout.layout, null);
 //                childLinear.setMinimumHeight(mIndicatorHeight+5);

@@ -27,6 +27,7 @@
         app:vpi_margin="6dp"
         app:vpi_orientation="vertical"
         app:vpi_width="16dp"
+        app:vpi_indicator_per_row="5"
 
 
 

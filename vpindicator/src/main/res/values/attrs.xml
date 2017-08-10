@@ -9,6 +9,7 @@
         <attr name="vpi_animator_reverse" format="reference"/>
         <attr name="vpi_drawable" format="reference"/>
         <attr name="vpi_drawable_unselected" format="reference"/>
+        <attr name="vpi_indicator_per_row" format="integer"/>
 
         <attr name="vpi_orientation" format="enum">
             <!-- Defines an horizontal widget. -->
