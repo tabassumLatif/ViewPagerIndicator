@@ -30,7 +30,7 @@ public class CustomPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return 5;
+        return 45;
     }
 
     @Override

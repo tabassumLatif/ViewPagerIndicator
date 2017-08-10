@@ -6,19 +6,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="tabi.sample.vpindicator.MainActivity">
-    
+
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="340dp">
 
     </android.support.v4.view.ViewPager>
+
     <tabi.vpindicator.ViewPagerIndicator
         android:id="@+id/vpIndicator"
         android:layout_width="match_parent"
-        app:vpi_drawable_unselected="@drawable/ic_white_select"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="left"
         app:vpi_drawable="@drawable/ic_tick_select_light_green"
-        app:vpi_width="16dp"
+        app:vpi_drawable_unselected="@drawable/ic_white_select"
+        app:vpi_gravity="center"
         app:vpi_height="16dp"
-        android:layout_height="48dp"/>
+        app:vpi_margin="6dp"
+        app:vpi_orientation="vertical"
+        app:vpi_width="16dp"
+
+
+
+
+        />
 </LinearLayout>

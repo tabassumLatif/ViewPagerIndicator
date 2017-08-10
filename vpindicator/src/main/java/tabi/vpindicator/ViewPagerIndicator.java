@@ -12,12 +12,17 @@ import android.support.annotation.DrawableRes;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
 
+import java.util.ArrayList;
+
 import static android.support.v4.view.ViewPager.OnPageChangeListener;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class ViewPagerIndicator extends LinearLayout {
 
@@ -34,8 +39,10 @@ public class ViewPagerIndicator extends LinearLayout {
     private Animator mAnimatorIn;
     private Animator mImmediateAnimatorOut;
     private Animator mImmediateAnimatorIn;
+    ArrayList<View> views = new ArrayList<>();
 
     private int mLastPosition = -1;
+    TypedArray typedArray;
 
     public ViewPagerIndicator(Context context) {
         super(context);
@@ -68,7 +75,7 @@ public class ViewPagerIndicator extends LinearLayout {
             return;
         }
 
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ViewPagerIndicator);
+        typedArray = context.obtainStyledAttributes(attrs, R.styleable.ViewPagerIndicator);
         mIndicatorWidth =
                 typedArray.getDimensionPixelSize(R.styleable.ViewPagerIndicator_vpi_width, -1);
         mIndicatorHeight =
@@ -194,20 +201,20 @@ public class ViewPagerIndicator extends LinearLayout {
             }
 
             View currentIndicator;
-            if (mLastPosition >= 0 && (currentIndicator = getChildAt(mLastPosition)) != null) {
+            if (mLastPosition >= 0 && (currentIndicator = views.get(mLastPosition)) != null) {
                 currentIndicator.setBackgroundResource(mIndicatorUnselectedBackgroundResId);
                 mAnimatorIn.setTarget(currentIndicator);
                 mAnimatorIn.start();
             }
 
-            View selectedIndicator = getChildAt(position);
+            View selectedIndicator = views.get(position);
             if (selectedIndicator != null) {
                 selectedIndicator.setBackgroundResource(mIndicatorBackgroundResId);
                 mAnimatorOut.setTarget(selectedIndicator);
                 mAnimatorOut.start();
                 if(position >= 1) {
                     for (int i = 0; i < position; i++) {
-                        View view = getChildAt(i);
+                        View view = views.get(i);
                         view.setBackgroundResource(mIndicatorBackgroundResId);
                     }
                 }
@@ -258,6 +265,7 @@ public class ViewPagerIndicator extends LinearLayout {
 
     private void createIndicators() {
         removeAllViews();
+        views.clear();
         int count = mViewpager.getAdapter().getCount();
         if (count <= 0) {
             return;
@@ -284,26 +292,74 @@ public class ViewPagerIndicator extends LinearLayout {
 
         View Indicator = new View(getContext());
         Indicator.setBackgroundResource(backgroundDrawableId);
-        addView(Indicator, mIndicatorWidth, mIndicatorHeight);
-        LayoutParams lp = (LayoutParams) Indicator.getLayoutParams();
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                mIndicatorWidth,
+                mIndicatorHeight);
 
-        if (orientation == HORIZONTAL) {
+        if (orientation == VERTICAL) {
+            layoutParams.leftMargin = mIndicatorMargin;
+            layoutParams.rightMargin = mIndicatorMargin;
+            layoutParams.topMargin = mIndicatorMargin;
+            layoutParams.bottomMargin = mIndicatorMargin;
+
+        } else {
+            layoutParams.leftMargin = mIndicatorMargin;
+            layoutParams.rightMargin = mIndicatorMargin;
+            layoutParams.topMargin = mIndicatorMargin;
+            layoutParams.bottomMargin = mIndicatorMargin;
+
+        }
+
+        if(getChildCount() == 0){
+            LinearLayout childLinear = (LinearLayout) LayoutInflater.from(getContext()).inflate(
+                    R.layout.layout, null);
+//            childLinear.setMinimumHeight(mIndicatorHeight+5);
+            childLinear.setGravity(Gravity.CENTER);
+
+            //inflate new Linear and add in parent;
+            addView(childLinear);
+
+            childLinear.addView(Indicator, layoutParams);
+        }else {
+            LinearLayout view = (LinearLayout) getChildAt(getChildCount() - 1);
+            if (view.getChildCount() == 10){
+                LinearLayout childLinear = (LinearLayout) LayoutInflater.from(getContext()).inflate(
+                        R.layout.layout, null);
+//                childLinear.setMinimumHeight(mIndicatorHeight+5);
+
+                childLinear.setGravity(Gravity.CENTER);
+                //add new linear in parent
+                addView(childLinear);
+                //inflate new Linear and add in parent;
+                childLinear.addView(Indicator, layoutParams);
+            }else{
+                // add child
+                view.addView(Indicator, layoutParams);
+            }
+        }
+
+
+//        LayoutParams lp = (LayoutParams) Indicator.getLayoutParams();
+        /*if (orientation == HORIZONTAL) {
             lp.leftMargin = mIndicatorMargin;
             lp.rightMargin = mIndicatorMargin;
+
         } else {
             lp.topMargin = mIndicatorMargin;
             lp.bottomMargin = mIndicatorMargin;
-        }
-
-        Indicator.setLayoutParams(lp);
+        }*/
+//        Indicator.setLayoutParams(lp);
 
         animator.setTarget(Indicator);
         animator.start();
+        views.add(Indicator);
+
     }
 
     private class ReverseInterpolator implements Interpolator {
         @Override public float getInterpolation(float value) {
             return Math.abs(1.0f - value);
+//            return value;
         }
     }
 
