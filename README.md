@@ -8,7 +8,7 @@ Gradle
 ------------
 ```groovy
 dependencies {
-    compile 'com.github.tabassumLatif:ViewPagerIndicator:1.0.0'
+    compile 'com.github.tabassumLatif:ViewPagerIndicator:1.0.+'
 }
 ```
 
