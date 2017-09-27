@@ -25,6 +25,13 @@ Usage
     ViewPagerIndicator viewPagerIndicator = (ViewPagerIndicator) view.findViewById(R.id.vpIndicator);
     viewpager.setAdapter(mPageAdapter);
     viewPagerIndicator.setViewPager(viewpager);
+    // for color
+    viewPagerIndicator.setSelectedColor(Color.BLUE);
+    viewPagerIndicator.setUnSelectedColor(Color.GREEN);
+    
+    // for Drawable
+    viewPagerIndicator.setSelectedDrawable(getResources().getDrawable(R.drawable.ic_tick_select_light_green));
+    viewPagerIndicator.setUnSelectedDrawable(getResources().getDrawable(R.drawable.ic_white_select));
 ```
 
 ##### Properties:
