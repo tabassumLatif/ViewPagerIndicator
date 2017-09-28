@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.AnimatorRes;
 import android.support.annotation.DrawableRes;
@@ -36,10 +37,15 @@ public class ViewPagerIndicator extends LinearLayout {
     private int mAnimatorReverseResId = 0;
     private int mIndicatorBackgroundResId = R.drawable.white_radius;
     private int mIndicatorUnselectedBackgroundResId = R.drawable.white_radius;
+
     private Animator mAnimatorOut;
     private Animator mAnimatorIn;
     private Animator mImmediateAnimatorOut;
     private Animator mImmediateAnimatorIn;
+    private int selectedColor = 0;
+    private int unSelectedColor = 0;
+    private Drawable selectedDrawable = null;
+    private Drawable unSelectedDrawable = null;
     ArrayList<View> views = new ArrayList<>();
 
     private int mLastPosition = -1;
@@ -96,6 +102,7 @@ public class ViewPagerIndicator extends LinearLayout {
         mIndicatorBackgroundResId =
                 typedArray.getResourceId(R.styleable.ViewPagerIndicator_vpi_drawable,
                         R.drawable.white_radius);
+
         mIndicatorUnselectedBackgroundResId =
                 typedArray.getResourceId(R.styleable.ViewPagerIndicator_vpi_drawable_unselected,
                         mIndicatorBackgroundResId);
@@ -156,6 +163,10 @@ public class ViewPagerIndicator extends LinearLayout {
         mIndicatorUnselectedBackgroundResId =
                 (mIndicatorUnselectedBackgroundResId == 0) ? mIndicatorBackgroundResId
                         : mIndicatorUnselectedBackgroundResId;
+        if(mIndicatorUnselectedBackgroundResId != 0){
+            unSelectedColor = 0;
+            unSelectedDrawable = null;
+        }
     }
 
     private Animator createAnimatorOut(Context context) {
@@ -208,20 +219,38 @@ public class ViewPagerIndicator extends LinearLayout {
 
             View currentIndicator;
             if (mLastPosition >= 0 && (currentIndicator = views.get(mLastPosition)) != null) {
-                currentIndicator.setBackgroundResource(mIndicatorUnselectedBackgroundResId);
+                if(mIndicatorUnselectedBackgroundResId != 0) {
+                    currentIndicator.setBackgroundResource(mIndicatorUnselectedBackgroundResId);
+                }else if(unSelectedColor != 0){
+                    currentIndicator.setBackgroundColor(unSelectedColor);
+                }else if(unSelectedDrawable != null){
+                    currentIndicator.setBackgroundDrawable(unSelectedDrawable);
+                }
                 mAnimatorIn.setTarget(currentIndicator);
                 mAnimatorIn.start();
             }
 
             View selectedIndicator = views.get(position);
             if (selectedIndicator != null) {
-                selectedIndicator.setBackgroundResource(mIndicatorBackgroundResId);
+                if(mIndicatorBackgroundResId != 0) {
+                    selectedIndicator.setBackgroundResource(mIndicatorBackgroundResId);
+                }else if(selectedColor != 0){
+                    selectedIndicator.setBackgroundColor(selectedColor);
+                }else if(selectedDrawable != null){
+                    selectedIndicator.setBackgroundDrawable(selectedDrawable);
+                }
                 mAnimatorOut.setTarget(selectedIndicator);
                 mAnimatorOut.start();
                 if(position >= 1) {
                     for (int i = 0; i < position; i++) {
                         View view = views.get(i);
-                        view.setBackgroundResource(mIndicatorBackgroundResId);
+                        if(mIndicatorBackgroundResId != 0) {
+                            view.setBackgroundResource(mIndicatorBackgroundResId);
+                        }else if(selectedColor != 0){
+                            view.setBackgroundColor(selectedColor);
+                        }else if(selectedDrawable != null){
+                            view.setBackgroundDrawable(selectedDrawable);
+                        }
                     }
                 }
             }
@@ -281,23 +310,42 @@ public class ViewPagerIndicator extends LinearLayout {
 
         for (int i = 0; i < count; i++) {
             if (currentItem == i) {
-                addIndicator(orientation, mIndicatorBackgroundResId, mImmediateAnimatorOut);
+                addIndicator(orientation, mIndicatorBackgroundResId, mImmediateAnimatorOut, true);
             } else {
                 addIndicator(orientation, mIndicatorUnselectedBackgroundResId,
-                        mImmediateAnimatorIn);
+                        mImmediateAnimatorIn, false);
             }
         }
     }
 
     private void addIndicator(int orientation, @DrawableRes int backgroundDrawableId,
-            Animator animator) {
+            Animator animator, boolean isSelected) {
         if (animator.isRunning()) {
             animator.end();
             animator.cancel();
         }
 
         View Indicator = new View(getContext());
-        Indicator.setBackgroundResource(backgroundDrawableId);
+        if(isSelected){
+            if(backgroundDrawableId != 0){
+                    Indicator.setBackgroundResource(backgroundDrawableId);
+            }else if(selectedColor != 0){
+                    Indicator.setBackgroundColor(selectedColor);
+            }else if(selectedDrawable != null){
+                Indicator.setBackgroundDrawable(selectedDrawable);
+            }
+        }else{
+            if(backgroundDrawableId != 0){
+                    Indicator.setBackgroundResource(backgroundDrawableId);
+
+            }else if(selectedColor != 0){
+
+                    Indicator.setBackgroundColor(unSelectedColor);
+            }else if(unSelectedDrawable != null){
+                Indicator.setBackgroundDrawable(unSelectedDrawable);
+            }
+        }
+
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 mIndicatorWidth,
                 mIndicatorHeight);
@@ -344,18 +392,6 @@ public class ViewPagerIndicator extends LinearLayout {
             }
         }
 
-
-//        LayoutParams lp = (LayoutParams) Indicator.getLayoutParams();
-        /*if (orientation == HORIZONTAL) {
-            lp.leftMargin = mIndicatorMargin;
-            lp.rightMargin = mIndicatorMargin;
-
-        } else {
-            lp.topMargin = mIndicatorMargin;
-            lp.bottomMargin = mIndicatorMargin;
-        }*/
-//        Indicator.setLayoutParams(lp);
-
         animator.setTarget(Indicator);
         animator.start();
         views.add(Indicator);
@@ -373,4 +409,32 @@ public class ViewPagerIndicator extends LinearLayout {
         final float scale = getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
+
+    public void setSelectedColor(int selectedColor){
+        this.selectedColor = selectedColor;
+        selectedDrawable = null;
+        mIndicatorBackgroundResId = 0;
+
+    }
+
+    public void setUnSelectedColor(int unSelectedColor){
+        this.unSelectedColor = unSelectedColor;
+        unSelectedDrawable = null;
+        mIndicatorUnselectedBackgroundResId = 0;
+    }
+
+    public void setSelectedDrawable(Drawable selectedColor){
+        this.selectedColor = 0;
+        selectedDrawable = selectedColor;
+        mIndicatorBackgroundResId = 0;
+
+    }
+
+    public void setUnSelectedDrawable(Drawable unSelectedColor){
+        this.unSelectedColor = 0;
+        unSelectedDrawable = unSelectedColor;
+        mIndicatorUnselectedBackgroundResId = 0;
+    }
+
+
 }
