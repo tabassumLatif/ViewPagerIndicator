@@ -46,6 +46,8 @@ public class ViewPagerIndicator extends LinearLayout {
     private int unSelectedColor = 0;
     private Drawable selectedDrawable = null;
     private Drawable unSelectedDrawable = null;
+    private boolean mIsProgress = false;
+
     ArrayList<View> views = new ArrayList<>();
 
     private int mLastPosition = -1;
@@ -112,6 +114,8 @@ public class ViewPagerIndicator extends LinearLayout {
 
         int gravity = typedArray.getInt(R.styleable.ViewPagerIndicator_vpi_gravity, -1);
         setGravity(gravity >= 0 ? gravity : Gravity.CENTER);
+
+        mIsProgress = typedArray.getBoolean(R.styleable.ViewPagerIndicator_vpi_progress, false);
 
         typedArray.recycle();
     }
@@ -248,8 +252,10 @@ public class ViewPagerIndicator extends LinearLayout {
                             view.setBackgroundResource(mIndicatorBackgroundResId);
                         }else if(selectedColor != 0){
                             view.setBackgroundColor(selectedColor);
-                        }else if(selectedDrawable != null){
+                        }else if(selectedDrawable != null && mIsProgress){
                             view.setBackgroundDrawable(selectedDrawable);
+                        }else  if(unSelectedDrawable != null && !mIsProgress){
+                            view.setBackgroundDrawable(unSelectedDrawable);
                         }
                     }
                 }

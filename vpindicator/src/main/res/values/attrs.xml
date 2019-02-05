@@ -55,6 +55,9 @@
             <flag name="end" value="0x00800005"/>
         </attr>
 
+
+        <attr name="vpi_progress" format="boolean" />
+
     </declare-styleable>
 
 
