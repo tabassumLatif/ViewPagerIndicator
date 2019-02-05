@@ -46,6 +46,8 @@ public class ViewPagerIndicator extends LinearLayout {
     private int unSelectedColor = 0;
     private Drawable selectedDrawable = null;
     private Drawable unSelectedDrawable = null;
+    private boolean mIsProgress = true;
+
     ArrayList<View> views = new ArrayList<>();
 
     private int mLastPosition = -1;
@@ -112,6 +114,8 @@ public class ViewPagerIndicator extends LinearLayout {
 
         int gravity = typedArray.getInt(R.styleable.ViewPagerIndicator_vpi_gravity, -1);
         setGravity(gravity >= 0 ? gravity : Gravity.CENTER);
+
+        mIsProgress = typedArray.getBoolean(R.styleable.ViewPagerIndicator_vpi_progress, false);
 
         typedArray.recycle();
     }
@@ -244,12 +248,22 @@ public class ViewPagerIndicator extends LinearLayout {
                 if(position >= 1) {
                     for (int i = 0; i < position; i++) {
                         View view = views.get(i);
-                        if(mIndicatorBackgroundResId != 0) {
-                            view.setBackgroundResource(mIndicatorBackgroundResId);
-                        }else if(selectedColor != 0){
-                            view.setBackgroundColor(selectedColor);
-                        }else if(selectedDrawable != null){
-                            view.setBackgroundDrawable(selectedDrawable);
+                        if(mIsProgress) {
+                            if (mIndicatorBackgroundResId != 0) {
+                                view.setBackgroundResource(mIndicatorBackgroundResId);
+                            } else if (selectedColor != 0) {
+                                view.setBackgroundColor(selectedColor);
+                            } else if (selectedDrawable != null) {
+                                view.setBackgroundDrawable(selectedDrawable);
+                            }
+                        }else {
+                            if (mIndicatorUnselectedBackgroundResId != 0) {
+                                view.setBackgroundResource(mIndicatorUnselectedBackgroundResId);
+                            } else if (unSelectedColor != 0) {
+                                view.setBackgroundColor(unSelectedColor);
+                            } else if (unSelectedDrawable != null) {
+                                view.setBackgroundDrawable(unSelectedDrawable);
+                            }
                         }
                     }
                 }
